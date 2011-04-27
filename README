@@ -73,15 +73,15 @@ fsm = FSM.new(myStateTransitionTable)
 
 -- Use your finite state machine 
 -- which starts by default with the first defined state
-print("Current FSM state: " .. fsm.get())
+print("Current FSM state: " .. fsm:get())
 
 -- Or you can set another state
-fsm.set("state2")							
-print("Current FSM state: " .. fsm.get())
+fsm:set("state2")							
+print("Current FSM state: " .. fsm:get())
 
 -- Resond on "event" and last set "state"
-fsm.fire("event2")
-print("Current FSM state: " .. fsm.get())
+fsm:fire("event2")
+print("Current FSM state: " .. fsm:get())
 
 Output:
 -------
