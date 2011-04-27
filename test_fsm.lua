@@ -4,7 +4,7 @@ File: test_fsm.lua
 Description: Tests for the finite state machine library
 
 Author: Erik Cornelisse
-Version: 0.4 
+Version 1.0  April 27, 2011
 
 ]]--
 
