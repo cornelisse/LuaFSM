@@ -1,11 +1,19 @@
--- Finite State Machine 
--- Version 0.3  April 4, 2011
+-- ==========================================================================================
+--
+-- Finite State Machine Class for Lua 5.1 & Corona SDK
+-- 
 -- Written by Erik Cornelisse, inspired by Luiz Henrique de Figueiredo
 -- E-mail: e.cornelisse@gmail.com
---
--- This class is free to use! 
--- Feel free to change but please send new versions, improvement or 
+-- 
+-- Version 1.0  April 27, 2011
+-- 
+-- Class is MIT Licensed
+-- Copyright (c) 2011 Erik Cornelisse
+-- 
+-- Feel free to change but please send new versions, improvements or 
 -- new features to me and help us to make it better.
+--
+-- ==========================================================================================
 
 --[[ A design pattern for doing finite state machines (FSMs) in Lua.
 
@@ -81,15 +89,15 @@ fsm = FSM.new(myStateTransitionTable)
 
 -- Use your finite state machine 
 -- which starts by default with the first defined state
-print("Current FSM state: " .. fsm.get())
+print("Current FSM state: " .. fsm:get())
 
 -- Or you can set another state
-fsm.set("state2")							
-print("Current FSM state: " .. fsm.get())
+fsm:set("state2")							
+print("Current FSM state: " .. fsm:get())
 
 -- Resond on "event" and last set "state"
-fsm.fire("event2")
-print("Current FSM state: " .. fsm.get())
+fsm:fire("event2")
+print("Current FSM state: " .. fsm:get())
 
 Output:
 -------
@@ -107,7 +115,7 @@ A specific remove method is not provided because I didn't need one (I think)
 But feel free to implement one yourself :-)
 
 One more thing, did I already mentioned that I am new to Lua?
-Therefore any comments on my coding style are welcome. 
+Well, I learn a lot of other examples, so do not forget yours. 
 
 CONCLUSION:
 -------------------------------------------------------------------------------
@@ -121,22 +129,24 @@ reduction of the complexity.
 Finite state machines can be used to force (at least parts of) your code into 
 deterministic behaviour. 
 
-Have fun. 
+Have fun !!
+
 --]]
 
 --MODULE CODE
 ------------------------------------------------------------------------------- 
- 
 module(..., package.seeall)
 
-function new(t)
+-- FSM CONSTANTS --------------------------------------------------------------
+SEPARATOR = '.'
+ANY       = '*'
+ANYSTATE  = ANY .. SEPARATOR
+ANYEVENT  = SEPARATOR .. ANY
+UNKNOWN   = ANYSTATE .. ANY
 
-	-- CONSTANTS --------------------------------------------------------------
-	local SEPARATOR = '.'
-	local ANY       = '*'
-	local ANYSTATE  = ANY .. SEPARATOR
-	local ANYEVENT  = SEPARATOR .. ANY
-	local UNKNOWN   = ANYSTATE .. ANY
+function new(t)
+	
+	local self = {}
 	
 	-- ATTRIBUTES -------------------------------------------------------------
 	local state = t[1][1]	-- current state, default the first one
@@ -147,9 +157,9 @@ function new(t)
 	-- METHODS ----------------------------------------------------------------	
 	
 	-- some getters and setters
-	function set(s) state = s end
-	function get() return state	end
-	function silent() silence = true end
+	function self:set(s) state = s end
+	function self:get() return state	end
+	function self:silent() silence = true end
 
 	-- default exception handling
 	local function exception() 
@@ -159,7 +169,7 @@ function new(t)
 	end	
 	
 	-- respond based on current state and event
-	function fire(event)
+	function self:fire(event)
 		local act = stt[state .. SEPARATOR .. event]
 		-- raise exception for unknown state-event combination
 		if act == nil then 
@@ -180,7 +190,7 @@ function new(t)
 	end
 
 	-- add new state transitions to the FSM
-	function add(t)
+	function self:add(t)
 		for _,v in ipairs(t) do
 			local oldState, event, newState, action = v[1], v[2], v[3], v[4]
 			
@@ -190,7 +200,7 @@ function new(t)
 	end
 	
 	-- remove state transitions from the FSM
-	function delete(t)
+	function self:delete(t)
 		for _,v in ipairs(t) do
 			local oldState, event = v[1], v[2]
 			if oldState == ANY and event == ANY then
@@ -210,10 +220,10 @@ function new(t)
 	-- initalise state transition table
 	stt[UNKNOWN] = {newState = state, action = exception}
 	
-	add(t)
+	self:add(t)
 
-	-- return your FSM methods
-	return { set = set, get = get, fire = fire , add = add, delete = delete, silent = silent }
+	-- return FSM methods
+	return self
 end
 
 

@@ -21,22 +21,25 @@ local myStateTransitionTable = {
 -- Create your instance of a finite state machine
 fsm = FSM.new(myStateTransitionTable)
 
+-- print( "Constant UNKNOWN = " .. UNKNOWN )
+print( "Constant FSM.UNKNOWN = " .. FSM.UNKNOWN )
+
 -- Use your finite state machine 
 -- which starts by default with the first defined state
-print("Current FSM state: " .. fsm.get())
+print("Current FSM state: " .. fsm:get())
 
 -- Or you can set another state
-fsm.set("state2")							
-print("Current FSM state: " .. fsm.get())
+fsm:set("state2")							
+print("Current FSM state: " .. fsm:get())
 
 -- Respond on "event" and last set "state"
-fsm.fire("event2")
-print("Current FSM state: " .. fsm.get())
+fsm:fire("event2")
+print("Current FSM state: " .. fsm:get())
 
 -- Force exception
 print("Force exception by firing unknown event")
-fsm.fire("event3")
-print("Current FSM state: " .. fsm.get())
+fsm:fire("event3")
+print("Current FSM state: " .. fsm:get())
 
 -- Test automated exception handling
 local myStateTransitionTable2 = {
@@ -48,27 +51,29 @@ local myStateTransitionTable2 = {
 
 -- Create your instance of a finite state machine
 fsm2 = FSM.new(myStateTransitionTable2)
-fsm2.set("state2")	
-print("\nCurrent FSM-2 state: " .. fsm2.get())
+fsm2:set("state2")	
+print("\nCurrent FSM-2 state: " .. fsm2:get())
 
-fsm2.delete({{"state2", "event2"}} )
+fsm2:delete({{"state2", "event2"}} )
 -- Force exception
-fsm2.fire("event2")
+fsm2:fire("event2")
 
-fsm2.delete({{"*", "?"}} )
+fsm2:delete({{"*", "?"}} )
 print("Force third exception (silence = true)")
-fsm2.silent() -- prevent unknown state-event notificaton to be printed
+fsm2:silent() -- prevent unknown state-event notificaton to be printed
 
-fsm2.fire("event3")
-print("Current FSM-2 state after firing  wildcard 'event3': " .. fsm2.get())
+fsm2:fire("event3")
+print("Current FSM-2 state after firing  wildcard 'event3': " .. fsm2:get())
 
-fsm2.add({{"*"     , "*",      "state2", action3}})
-fsm2.fire("event2")
-print("Current FSM-2 state: " .. fsm2.get())
+fsm2:add({{"*"     , "*",      "state2", action3}})
+fsm2:fire("event2")
+print("Current FSM-2 state: " .. fsm2:get())
+print("Current FSM state: " .. fsm:get())
 
 --[[
-Output:
+Expected output:
 
+Constant FSM.UNKNONW = *.*
 Current FSM state: state1
 Current FSM state: state2
 Performing action 2
@@ -84,4 +89,5 @@ Wildcard in action !!!
 Current FSM-2 state after firing  wildcard 'event3': state1
 Action 3: Exception raised
 Current FSM-2 state: state2
+Current FSM state: state1
 --]]

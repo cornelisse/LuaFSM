@@ -4,7 +4,7 @@ File: test_fsm.lua
 Description: Tests for the finite state machine library
 
 Author: Erik Cornelisse
-Version: 0.2 
+Version: 0.4 
 
 ]]--
 
@@ -35,61 +35,64 @@ TestFSM = {} --class
 		fsm1 = FSM.new(myStateTransitionTable1)	
 		fsm2 = FSM.new(myStateTransitionTable2)
 		
-		fsm1.silent()
-		fsm2.silent()
+		fsm1:silent()
+		fsm2:silent()
     end
 	
 	function TestFSM:test1()
+	
+		assertEquals( FSM.UNKNOWN , "*.*" )
+	
 		-- Retrieve initial state
-		assertEquals( fsm1.get() , "state1" )
+		assertEquals( fsm1:get() , "state1" )
 		
 		-- Set another state
-		fsm1.set( "state2" )
-		assertEquals( fsm1.get() , "state2" )
+		fsm1:set( "state2" )
+		assertEquals( fsm1:get() , "state2" )
 		
 		-- Respond on "event" and current state
-		assertEquals( fsm1.fire("event2"), 2)
-		assertEquals( fsm1.get() , "state3" )
+		assertEquals( fsm1:fire("event2"), 2)
+		assertEquals( fsm1:get() , "state3" )
 		
 		-- Force "default" exception for "state3.event3"
-		assertEquals( fsm1.fire("event3") , false) 
-		assertEquals( fsm1.get() , "state1" )
+		assertEquals( fsm1:fire("event3") , false) 
+		assertEquals( fsm1:get() , "state1" )
 	end
 	
 	function TestFSM:test2()
 			
 		-- Retrieve initial state
-		assertEquals( fsm2.get() , "state1" )
+		assertEquals( fsm2:get() , "state1" )
 		
 		-- Set another state
-		fsm2.set( "state2" )
-		assertEquals( fsm2.get() , "state2" )
+		fsm2:set( "state2" )
+		assertEquals( fsm2:get() , "state2" )
 		
 		-- Respond on "event" and current state
-		assertEquals( fsm2.fire("event2"), 2)
-		assertEquals( fsm2.get() , "state3" )
+		assertEquals( fsm2:fire("event2"), 2)
+		assertEquals( fsm2:get() , "state3" )
 		
 		-- Force "wildcard" exception "*.event3" => action #4
-		assertEquals( fsm2.fire("event3"), 4)
-		assertEquals( fsm2.get() , "state1" )
+		assertEquals( fsm2:fire("event3"), 4)
+		assertEquals( fsm2:get() , "state1" )
 	end
 	
 	function TestFSM:test3()
 			
-		fsm2.set( "state2" )
-		assertEquals( fsm2.get() , "state2" )
+		fsm2:set( "state2" )
+		assertEquals( fsm2:get() , "state2" )
 			
 		-- Force exception caused by removed state transition
-		assertEquals( fsm2.delete({{"state2", "event2"}}), 1) 
-		assertEquals( fsm2.fire("event2"), 3 )
-		assertEquals( fsm2.get() , "state1" )
+		assertEquals( fsm2:delete({{"state2", "event2"}}), 1) 
+		assertEquals( fsm2:fire("event2"), 3 )
+		assertEquals( fsm2:get() , "state1" )
 		
 		-- Remove the exception handler
-		assertEquals( fsm2.delete({{"*", "*"}}), 1)
+		assertEquals( fsm2:delete({{"*", "*"}}), 1)
 
 		-- Correcting our mistake
-		assertEquals( fsm2.add({{"*", "*", "state2", action3}}), 1)
-		assertEquals( fsm2.fire("event2"), 3)
+		assertEquals( fsm2:add({{"*", "*", "state2", action3}}), 1)
+		assertEquals( fsm2:fire("event2"), 3)
 		
 	end
 -- class TestFSM
